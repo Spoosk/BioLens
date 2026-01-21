@@ -1,9 +1,9 @@
 import sys
 import os
 import subprocess
-import webbrowser
 import time
 from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QFileDialog, QMessageBox
+import webview
 
 from CSVDateCleaner import clean_csv
 
@@ -62,10 +62,10 @@ class MainWindow(QWidget):
             # Wait a bit for server to start
             time.sleep(3)
 
-            # Open browser
-            webbrowser.open("http://127.0.0.1:8050/")
-
-            self.status_label.setText("Dashboard opened in browser.")
+            # Close the current window and open the dashboard in a native webview window
+            self.close()
+            webview.create_window('BioLens Trail Cam Dashboard', 'http://127.0.0.1:8050/')
+            webview.start()
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
