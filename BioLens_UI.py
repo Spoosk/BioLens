@@ -3,7 +3,17 @@ import os
 import subprocess
 import time
 from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QFileDialog, QMessageBox
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import QTimer
 import webview
+
+# Try to set Windows taskbar icon
+try:
+    import ctypes
+    myappid = 'BioLens.TrailCam.Processor'  # arbitrary string
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except:
+    pass
 
 from CSVDateCleaner import clean_csv
 
@@ -12,6 +22,8 @@ class MainWindow(QWidget):
         super().__init__()
         self.setWindowTitle("BioLens Trail Cam Processor")
         self.setGeometry(100, 100, 400, 200)
+        
+        # Icon will be set after window is shown for proper taskbar display
 
         layout = QVBoxLayout()
 
@@ -72,6 +84,19 @@ class MainWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    
     window = MainWindow()
     window.show()
+    
+    # Set icon after window is shown to ensure taskbar gets it
+    def set_taskbar_icon():
+        icon = QIcon("icon.ico")
+        app.setWindowIcon(icon)
+        window.setWindowIcon(icon)
+        # Force repaint
+        window.repaint()
+    
+    # Use timer to set icon after event loop starts
+    QTimer.singleShot(100, set_taskbar_icon)
+    
     sys.exit(app.exec())
