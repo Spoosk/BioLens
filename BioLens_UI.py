@@ -17,11 +17,46 @@ except:
 
 from CSVDateCleaner import clean_csv
 
+# Nature theme stylesheet
+NATURE_STYLESHEET = """
+    QWidget {
+        background-color: #f5f5f0;
+        color: #2d3d2d;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        font-size: 11pt;
+    }
+    QPushButton {
+        background-color: #4a7c59;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+        font-weight: bold;
+    }
+    QPushButton:hover {
+        background-color: #5a9c6f;
+    }
+    QPushButton:pressed {
+        background-color: #2d5a3d;
+    }
+    QPushButton:disabled {
+        background-color: #a0a0a0;
+        color: #cccccc;
+    }
+    QLabel {
+        color: #2d3d2d;
+    }
+    QFileDialog {
+        background-color: #f5f5f0;
+    }
+"""
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("BioLens Trail Cam Processor")
-        self.setGeometry(100, 100, 400, 200)
+        self.setGeometry(100, 100, 500, 250)
+        self.setStyleSheet(NATURE_STYLESHEET)
         
         # Icon will be set after window is shown for proper taskbar display
 
