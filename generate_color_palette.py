@@ -1,0 +1,382 @@
+"""
+Color Palette Generator for BioLens Nature Theme
+Generates an HTML preview of the nature theme colors
+"""
+
+import os
+
+html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 BioLens Nature Theme - Color Palette</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f5f0 0%, #f0f5f0 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 40px 20px;
+            color: #2d3d2d;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2d5a3d;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(77, 124, 89, 0.1);
+        }
+        .subtitle {
+            text-align: center;
+            color: #5a7a6a;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        .color-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .color-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        .color-swatch {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 10px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            font-size: 0.9em;
+        }
+        .color-info {
+            padding: 20px;
+        }
+        .color-name {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #2d3d2d;
+        }
+        .color-codes {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #5a7a6a;
+            font-family: 'Courier New', monospace;
+        }
+        .color-code-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .code-label {
+            min-width: 50px;
+        }
+        .usage {
+            margin-top: 8px;
+            padding-top: 10px;
+            border-top: 1px solid #e8e8e0;
+            font-size: 0.85em;
+            color: #4a7c59;
+            font-style: italic;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section-title {
+            font-size: 1.4em;
+            color: #2d5a3d;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4a7c59;
+        }
+        .ui-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .element-demo {
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .button-primary {
+            background-color: #4a7c59;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+        .button-primary:hover {
+            background-color: #3a6a49;
+            box-shadow: 0 2px 8px rgba(74, 124, 89, 0.3);
+        }
+        .button-secondary {
+            background-color: #e8f0e8;
+            color: #2d3d2d;
+            border: 2px solid #4a7c59;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .button-secondary:hover {
+            background-color: #d8e8d8;
+            border-color: #3a6a49;
+        }
+        .demo-label {
+            font-size: 0.85em;
+            color: #5a7a6a;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .footer {
+            text-align: center;
+            color: #5a7a6a;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e8e8e0;
+            font-size: 0.9em;
+        }
+        .copy-hint {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌿 BioLens Nature Theme</h1>
+        <p class="subtitle">Color Palette & Component Reference</p>
+        
+        <div class="section">
+            <h2 class="section-title">Primary Colors</h2>
+            <div class="palette-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #4a7c59;">#4a7c59</div>
+                    <div class="color-info">
+                        <div class="color-name">Primary Green</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #4a7c59
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 74, 124, 89
+                            </div>
+                        </div>
+                        <div class="usage">Buttons, borders, accents</div>
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #2d5a3d;">#2d5a3d</div>
+                    <div class="color-info">
+                        <div class="color-name">Dark Forest</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #2d5a3d
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 45, 90, 61
+                            </div>
+                        </div>
+                        <div class="usage">Headings, emphasis</div>
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #2d3d2d; color: #d0d0c8;">#2d3d2d</div>
+                    <div class="color-info">
+                        <div class="color-name">Dark Sage</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #2d3d2d
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 45, 61, 45
+                            </div>
+                        </div>
+                        <div class="usage">Primary text</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Background Colors</h2>
+            <div class="palette-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #f5f5f0; border: 1px solid #e0e0d8; color: #2d3d2d;">Main BG</div>
+                    <div class="color-info">
+                        <div class="color-name">Light Background</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #f5f5f0
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 245, 245, 240
+                            </div>
+                        </div>
+                        <div class="usage">Main page background</div>
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #ffffff; border: 1px solid #e0e0d8; color: #2d3d2d;">White</div>
+                    <div class="color-info">
+                        <div class="color-name">Cream White</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #ffffff
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 255, 255, 255
+                            </div>
+                        </div>
+                        <div class="usage">Cards, inputs</div>
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #e8f0e8;">#e8f0e8</div>
+                    <div class="color-info">
+                        <div class="color-name">Soft Green</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #e8f0e8
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 232, 240, 232
+                            </div>
+                        </div>
+                        <div class="usage">Hover states, accents</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Interactive States</h2>
+            <div class="palette-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #3a6a49;">#3a6a49</div>
+                    <div class="color-info">
+                        <div class="color-name">Forest Dark</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #3a6a49
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 58, 106, 73
+                            </div>
+                        </div>
+                        <div class="usage">Hover effects</div>
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #2a5a39;">#2a5a39</div>
+                    <div class="color-info">
+                        <div class="color-name">Deep Forest</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #2a5a39
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 42, 90, 57
+                            </div>
+                        </div>
+                        <div class="usage">Pressed/active states</div>
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch" style="background-color: #e8e8e0; color: #2d3d2d;">Grid</div>
+                    <div class="color-info">
+                        <div class="color-name">Light Grid</div>
+                        <div class="color-codes">
+                            <div class="color-code-row">
+                                <span class="code-label">HEX:</span> #e8e8e0
+                            </div>
+                            <div class="color-code-row">
+                                <span class="code-label">RGB:</span> 232, 232, 224
+                            </div>
+                        </div>
+                        <div class="usage">Grid lines, dividers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Component Examples</h2>
+            <div class="ui-elements">
+                <div class="element-demo">
+                    <button class="button-primary">Primary Button</button>
+                    <div class="demo-label">Press to action</div>
+                </div>
+                <div class="element-demo">
+                    <button class="button-secondary">Secondary Button</button>
+                    <div class="demo-label">Alternative action</div>
+                </div>
+                <div class="element-demo">
+                    <div style="padding: 12px; background-color: #e8f0e8; border: 1px solid #4a7c59; border-radius: 6px; color: #2d3d2d; font-weight: 600;">
+                        Input Field
+                    </div>
+                    <div class="demo-label">Focused state</div>
+                </div>
+                <div class="element-demo">
+                    <div style="padding: 15px; background-color: #f5f5f0; border-left: 4px solid #4a7c59; color: #2d3d2d;">
+                        <strong style="color: #2d5a3d;">Header Text</strong><br>
+                        <span style="font-size: 0.9em; color: #5a7a6a;">Description text</span>
+                    </div>
+                    <div class="demo-label">Card layout</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>🌿 BioLens Nature Theme</strong></p>
+            <p style="margin-top: 10px;">For more information, see NATURE_THEME.md</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+if __name__ == "__main__":
+    output_file = os.path.join(os.path.dirname(__file__), "COLOR_PALETTE.html")
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    print(f"✓ Color palette reference generated: {output_file}")
+    print(f"  Open this file in a web browser to preview the nature theme colors.")

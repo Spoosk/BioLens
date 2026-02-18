@@ -19,46 +19,7 @@ df['day'] = df['timestamp'].dt.to_period('D').dt.to_timestamp()
 # App
 app = Dash(__name__)
 
-# Nature theme stylesheet
-NATURE_CSS = """
-    body {
-        background-color: #f5f5f0;
-        color: #2d3d2d;
-        font-family: 'Segoe UI', Arial, sans-serif;
-    }
-    h1 {
-        color: #2d5a3d;
-        border-bottom: 3px solid #4a7c59;
-        padding-bottom: 10px;
-        margin-bottom: 30px;
-    }
-    label {
-        color: #2d3d2d;
-        font-weight: 600;
-    }
-    .Select-control {
-        background-color: white;
-        border-color: #4a7c59;
-        color: #2d3d2d;
-    }
-    .Select-menu-outer {
-        background-color: white;
-        border-color: #4a7c59;
-    }
-    .Select-option.is-focused {
-        background-color: #e8f0e8;
-        color: #2d3d2d;
-    }
-    .Select-option.is-selected {
-        background-color: #4a7c59;
-        color: white;
-    }
-    .plotly-graph-div {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-"""
+# Note: CSS is loaded automatically from assets/custom.css
 
 # Dropdown options
 def dropdown_options(column):
@@ -71,7 +32,6 @@ time_options = [
 ]
 
 app.layout = html.Div([
-    html.Style(NATURE_CSS),
     html.Div([
         html.H1("🌿 Trail Cam Data Viewer"),
         html.Div([
@@ -134,8 +94,49 @@ def update_graph(time_group, cl, order, genus, species, family):
             break
 
     time_col = dff[time_group]
-    fig = px.histogram(dff, x=time_col, nbins=len(dff[time_group].unique()), title=f"Observations Grouped by {time_group.title()}")
-    fig.update_layout(xaxis_title=time_group.title(), yaxis_title="Count", bargap=0.2)
+    fig = px.histogram(dff, x=time_col, nbins=len(dff[time_group].unique()), title=f"🌍 Observations Grouped by {time_group.title()}")
+    
+    # Apply nature theme to graph
+    fig.update_layout(
+        xaxis_title=time_group.title(),
+        yaxis_title="Count",
+        bargap=0.2,
+        title_font_size=18,
+        title_font_color="#2d5a3d",
+        font=dict(family="Arial, sans-serif", size=12, color="#2d3d2d"),
+        plot_bgcolor="#f5f5f0",
+        paper_bgcolor="white",
+        hovermode="x unified",
+        margin=dict(l=50, r=50, t=80, b=50),
+    )
+    
+    fig.update_traces(
+        marker_color="#4a7c59",
+        marker_line_color="#2d5a3d",
+        marker_line_width=1.5,
+        hovertemplate="<b>%{x}</b><br>Count: %{y}<extra></extra>"
+    )
+    
+    fig.update_xaxes(
+        showgrid=True,
+        gridwidth=1,
+        gridcolor="#e8e8e0",
+        zeroline=False,
+        showline=True,
+        linewidth=2,
+        linecolor="#4a7c59"
+    )
+    
+    fig.update_yaxes(
+        showgrid=True,
+        gridwidth=1,
+        gridcolor="#e8e8e0",
+        zeroline=False,
+        showline=True,
+        linewidth=2,
+        linecolor="#4a7c59"
+    )
+    
     return fig
 
 @app.callback(
