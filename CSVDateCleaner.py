@@ -2,11 +2,13 @@ import pandas as pd
 from datetime import datetime
 import os
 import sys
+import re
 
 def clean_csv(input_file):
     # === CONFIG ===
     timestamp_col = "timestamp"
     deployment_col = "deployment_id"
+    camera_col = "camera"
 
     # === LOAD DATA ===
     df = pd.read_csv(input_file)
@@ -21,6 +23,27 @@ def clean_csv(input_file):
             return datetime.strptime(date_str, "%m-%d-%Y").date()
         except:
             return None
+
+    # === FUNCTION TO EXTRACT CAMERA NUMBER FROM deployment_id ===
+    def extract_camera_from_deployment(deployment_string):
+        if pd.isnull(deployment_string):
+            return None
+        s = str(deployment_string)
+        # Look for common patterns like 'Camera 1', 'Cam1', 'C1', '_C1', '-C1'
+        m = re.search(r"camera\s*(\d+)", s, flags=re.IGNORECASE)
+        if m:
+            return f"Camera {m.group(1)}"
+        m = re.search(r"\bcam\s*(\d+)\b", s, flags=re.IGNORECASE)
+        if m:
+            return f"Camera {m.group(1)}"
+        m = re.search(r"[_\-\s]c(?:am)?[_\-]?(\d+)\b", s, flags=re.IGNORECASE)
+        if m:
+            return f"Camera {m.group(1)}"
+        # Fallback: last standalone digit group in the string
+        m = re.findall(r"(\d+)", s)
+        if m:
+            return f"Camera {m[-1]}"
+        return None
 
     # === FIX TIMESTAMPS (ONLY IF YEARS MISMATCH) ===
     corrected_timestamps = []
@@ -41,6 +64,9 @@ def clean_csv(input_file):
 
     # Apply changes
     df[timestamp_col] = corrected_timestamps
+
+    # Extract camera from deployment_id and store in a new column
+    df[camera_col] = df[deployment_col].apply(extract_camera_from_deployment)
 
     # === SAVE TO CLEANED FILE ===
     file_root, file_ext = os.path.splitext(input_file)
