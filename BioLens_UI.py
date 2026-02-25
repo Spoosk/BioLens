@@ -150,12 +150,12 @@ class MainWindow(QWidget):
             return
 
         try:
-            self.status_label.setText("🔄 Cleaning data...")
+            self.status_label.setText("Cleaning data...")
             QApplication.processEvents()  # Update UI
 
             cleaned_file = clean_csv(self.selected_file)
 
-            self.status_label.setText("🌍 Starting dashboard...")
+            self.status_label.setText("Starting dashboard...")
             QApplication.processEvents()
 
             # Run Dash in a separate process
