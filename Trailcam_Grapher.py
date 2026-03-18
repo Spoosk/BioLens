@@ -118,9 +118,9 @@ def update_graph(time_group, plot_type, cl, order, genus, species, family):
         grouped['percentage'] = (grouped['count'] / grouped['total']) * 100
         fig = px.bar(grouped, x=time_group, y='percentage', color='common_name', barmode='stack', title=f"🌍 Stacked Observations by {time_group.title()}",
                      color_discrete_sequence=[
-                         "#1b4332", "#0d3b66", "#5a189a", "#a86423",
-                         "#4a5859", "#2d6a4f", "#1d3557", "#6b4423",
-                         "#8b5a8f", "#2a9d8f", "#5a6b4a", "#c57b57"
+                         "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+                         "#8c564b", "#e377c2", "#7f7f7f", "#17becf", "#aec7e8",
+                         "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94"
                      ])
     
     # Apply nature theme to graph
