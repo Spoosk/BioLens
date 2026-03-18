@@ -121,7 +121,6 @@ app.layout = html.Div([
      Input('family-filter', 'value')]
 )
 def update_graph(time_group, plot_type, cl, order, genus, species, family):
-def update_graph(time_group, plot_type, cl, order, genus, species, family):
     # Start with all data
     dff = df.copy()
 
