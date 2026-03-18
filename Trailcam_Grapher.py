@@ -16,6 +16,15 @@ df['year'] = df['timestamp'].dt.year
 df['month'] = df['timestamp'].dt.to_period('M').dt.to_timestamp()
 df['day'] = df['timestamp'].dt.to_period('D').dt.to_timestamp()
 
+# Create consistent color mapping for all species
+color_palette = [
+    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+    "#8c564b", "#e377c2", "#7f7f7f", "#17becf", "#aec7e8",
+    "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94"
+]
+all_common_names = sorted(df['common_name'].dropna().unique())
+species_colors = {name: color_palette[i % len(color_palette)] for i, name in enumerate(all_common_names)}
+
 # App
 app = Dash(__name__)
 
@@ -41,6 +50,19 @@ app.layout = html.Div([
                     id='time-group',
                     options=time_options,
                     value='month',
+                    clearable=False
+                ),
+            ], style={"width": "200px", "display": "inline-block", "margin-right": "20px"}),
+
+            html.Div([
+                html.Label("Plot Type:"),
+                dcc.Dropdown(
+                    id='plot-type',
+                    options=[
+                        {'label': 'Histogram', 'value': 'histogram'},
+                        {'label': 'Stacked Bar Plot', 'value': 'stacked_bar'}
+                    ],
+                    value='histogram',
                     clearable=False
                 ),
             ], style={"width": "200px", "display": "inline-block", "margin-right": "20px"}),
@@ -77,13 +99,14 @@ app.layout = html.Div([
 @app.callback(
     Output('bar-graph', 'figure'),
     [Input('time-group', 'value'),
+     Input('plot-type', 'value'),
      Input('class-filter', 'value'),
      Input('order-filter', 'value'),
      Input('genus-filter', 'value'),
      Input('species-filter', 'value'),
      Input('family-filter', 'value')]
 )
-def update_graph(time_group, cl, order, genus, species, family):
+def update_graph(time_group, plot_type, cl, order, genus, species, family):
     # Start with all data
     dff = df.copy()
 
@@ -94,12 +117,24 @@ def update_graph(time_group, cl, order, genus, species, family):
             break
 
     time_col = dff[time_group]
-    fig = px.histogram(dff, x=time_col, nbins=len(dff[time_group].unique()), title=f"🌍 Observations Grouped by {time_group.title()}")
+    if plot_type == 'histogram':
+        fig = px.histogram(dff, x=time_col, nbins=len(dff[time_group].unique()), title=f"🌍 Observations Grouped by {time_group.title()}")
+    else:  # stacked_bar
+        grouped = dff.groupby([time_group, 'common_name']).size().reset_index(name='count')
+        # Calculate total per time group
+        totals = grouped.groupby(time_group)['count'].sum().reset_index(name='total')
+        grouped = grouped.merge(totals, on=time_group)
+        grouped['percentage'] = (grouped['count'] / grouped['total']) * 100
+        # Sort by common_name to ensure consistent order
+        grouped = grouped.sort_values('common_name')
+        # Use consistent color mapping
+        fig = px.bar(grouped, x=time_group, y='percentage', color='common_name', barmode='stack', title=f"🌍 Stacked Observations by {time_group.title()}",
+                     color_discrete_map=species_colors, category_orders={'common_name': sorted(grouped['common_name'].unique())})
     
     # Apply nature theme to graph
     fig.update_layout(
         xaxis_title=time_group.title(),
-        yaxis_title="Count",
+        yaxis_title="Percentage (%)" if plot_type == 'stacked_bar' else "Count",
         bargap=0.2,
         title_font_size=18,
         title_font_color="#2d5a3d",
@@ -110,12 +145,23 @@ def update_graph(time_group, cl, order, genus, species, family):
         margin=dict(l=50, r=50, t=80, b=50),
     )
     
-    fig.update_traces(
-        marker_color="#4a7c59",
-        marker_line_color="#2d5a3d",
-        marker_line_width=1.5,
-        hovertemplate="<b>%{x}</b><br>Count: %{y}<extra></extra>"
-    )
+    if plot_type == 'histogram':
+        fig.update_traces(
+            marker_color="#4a7c59",
+            marker_line_color="#2d5a3d",
+            marker_line_width=1.5,
+            hovertemplate="<b>%{x}</b><br>Count: %{y}<extra></extra>"
+        )
+    else:
+        # Explicitly set colors for each species trace
+        for trace in fig.data:
+            species_name = trace.name
+            if species_name in species_colors:
+                trace.marker.color = species_colors[species_name]
+        fig.update_traces(
+            hovertemplate="<b>%{x}</b><br>%{fullData.name}: %{y:.1f}% (Count: %{customdata})<extra></extra>",
+            customdata=grouped['count'].values
+        )
     
     fig.update_xaxes(
         showgrid=True,
