@@ -134,26 +134,17 @@ def update_graph(time_group, plot_type, cl, order, genus, species, family):
     if plot_type == 'histogram':
         fig = px.histogram(dff, x=time_col, nbins=len(dff[time_group].unique()), title=f"🌍 Observations Grouped by {time_group.title()}")
     else:  # stacked_bar
-        grouped = dff.groupby([time_group, 'species']).size().reset_index(name='count')
-        # Calculate total per time group
-        totals = grouped.groupby(time_group)['count'].sum().reset_index(name='total')
-        grouped = grouped.merge(totals, on=time_group)
-        grouped['percentage'] = (grouped['count'] / grouped['total']) * 100
-        fig = px.bar(grouped, x=time_group, y='percentage', color='species', barmode='stack', title=f"🌍 Stacked Observations by {time_group.title()}",
-                     color_discrete_sequence=px.colors.qualitative.Set1)
-    if plot_type == 'histogram':
-        fig = px.histogram(dff, x=time_col, nbins=len(dff[time_group].unique()), title=f"🌍 Observations Grouped by {time_group.title()}")
-    else:  # stacked_bar
         grouped = dff.groupby([time_group, 'common_name']).size().reset_index(name='count')
         # Calculate total per time group
         totals = grouped.groupby(time_group)['count'].sum().reset_index(name='total')
         grouped = grouped.merge(totals, on=time_group)
         grouped['percentage'] = (grouped['count'] / grouped['total']) * 100
-        # Sort by common_name to ensure consistent order
-        grouped = grouped.sort_values('common_name')
-        # Use consistent color mapping
         fig = px.bar(grouped, x=time_group, y='percentage', color='common_name', barmode='stack', title=f"🌍 Stacked Observations by {time_group.title()}",
-                     color_discrete_map=species_colors, category_orders={'common_name': sorted(grouped['common_name'].unique())})
+                     color_discrete_sequence=[
+                         "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+                         "#8c564b", "#e377c2", "#7f7f7f", "#17becf", "#aec7e8",
+                         "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94"
+                     ])
     
     # Apply nature theme to graph
     fig.update_layout(
@@ -171,7 +162,8 @@ def update_graph(time_group, plot_type, cl, order, genus, species, family):
     )
     
     if plot_type == 'stacked_bar':
-        fig.update_traces(hovertemplate="<b>%{x}</b><br>%{fullData.name}: %{y:.1f}%<extra></extra>")
+        fig.update_traces(hovertemplate="<b>%{x}</b><br>%{fullData.name}: %{y:.1f}% (Count: %{customdata})<extra></extra>",
+                         customdata=grouped['count'].values)
     else:
         fig.update_traces(
             marker_color="#4a7c59",
