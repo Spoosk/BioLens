@@ -1,28 +1,15 @@
 # 🌿 BioLens Trail Cam Processor
 
-BioLens is a modern, nature-themed software for processing and visualizing wildlife camera trap data from **Wildlife Insights**. It provides an intuitive interface for data cleaning, exploratory analysis, and interactive visualization.
+BioLens is an analytical tool for processing and visualizing wildlife camera trap data from **Wildlife Insights**. It provides an intuitive interface for data cleaning, exploratory analysis, and interactive visualization.
 
-## ✨ Features
+## Features
 
-- **Clean UI with Nature Theme**: Forest green and earth-tone color palette throughout
-- **CSV Data Processing**: Automatically cleans and validates Wildlife Insights exports
+- **CSV Data Processing**: Automatically cleans and validates Wildlife Insights exports (note: metadata inaccuracies will be overwritten with upload date)
 - **Interactive Dashboard**: Explore data by time periods, species, taxonomy, and more
-- **Responsive Design**: Beautiful, modern interface that works on all devices
 - **Real-time Filtering**: Filter data by Class, Order, Family, Genus, or Species
 - **Time-series Analysis**: View observations grouped by day, month, or year
 
-## 🎨 Design
-
-The entire application features a cohesive **nature theme** with:
-- Forest green accents (#4a7c59)
-- Warm cream backgrounds (#f5f5f0)
-- Smooth transitions and hover effects
-- Accessible color contrasts (WCAG AA compliant)
-- Wildlife-themed emoji for intuitive navigation
-
-For detailed theme documentation, see [NATURE_THEME.md](NATURE_THEME.md).
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Requirements
 - Python 3.7+
@@ -49,7 +36,7 @@ python BioLens_UI.py
 3. Click **⚙️ Process and Open Dashboard** to clean and visualize the data
 4. The dashboard will open in a new window with interactive charts
 
-## 📊 Usage
+## Usage
 
 ### Launcher Window
 - **Select File**: Browse and choose a `.csv` file from Wildlife Insights
@@ -57,17 +44,17 @@ python BioLens_UI.py
 - **Status**: Real-time feedback on processing status
 
 ### Dashboard
-- **Group by Time**: Switch between day, month, or year-level aggregation
+- **Group by Time**: Switch between day, month, or year-level aggregation (day-to-day acccuracy is limited by camera metadata accuracy)
 - **Filter Controls**: 
   - Class: Mammalia, Aves, Reptilia, etc.
-  - Order, Family, Genus, Species: Drill down into taxonomy
+  - Order, Family, Genus, Species: more specific taxonomy
 - **Interactive Graph**: Hover for details, zoom, pan, and download as PNG
 
 ## 📁 Project Structure
 
 ```
 BioLens/
-├── BioLens_UI.py              # Main launcher with nature-themed interface
+├── BioLens_UI.py              # Main launcher
 ├── Trailcam_Grapher.py        # Interactive Dash dashboard
 ├── CSVDateCleaner.py          # Data cleaning utilities
 ├── Sample_Data.csv            # Example dataset
@@ -75,7 +62,7 @@ BioLens/
 └── README.md                  # This file
 ```
 
-## 🔧 Customization
+## Customization
 
 To customize colors, edit the hex codes in:
 - **UI Window**: `BioLens_UI.py` (search for `#4a7c59`)
@@ -83,7 +70,7 @@ To customize colors, edit the hex codes in:
 
 See [NATURE_THEME.md](NATURE_THEME.md) for the complete color palette.
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 **"No module named PySide6"**
 ```bash
@@ -105,15 +92,10 @@ BioLens expects CSV files from Wildlife Insights with columns including:
 - `species`: The detected species
 - `class`, `order`, `family`, `genus`: Taxonomic classification
 - `common_name`: Human-readable species name
-- And others (location, behavior, etc.)
 
-## 🌍 Wildlife Insights
+## Wildlife Insights
 
 Learn more about Wildlife Insights at: https://www.wildlifeinsights.org/
-
-## 📄 License
-
-[Add your license info here]
 
 ## 🤝 Contributing
 
@@ -121,4 +103,4 @@ Contributions welcome! For feature requests or bug reports, please open an issue
 
 ---
 
-**Made for wildlife researchers and conservation professionals** 🦌🦙🐆
+**Made for wildlife researchers and conservation professionals, as well as casual observers!**
